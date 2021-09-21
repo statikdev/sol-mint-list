@@ -1,3 +1,4 @@
+import cliProgress from 'cli-progress';
 import got from 'got';
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 
@@ -16,6 +17,11 @@ interface MintData {
 (async function () {
   const mintWallet = 'AuTF3kgAyBzsfjGcNABTSzzXK4bVcZcyZJtpCrayxoVp'; // snek wallet mint
 
+  const progressBar = new cliProgress.SingleBar(
+    {},
+    cliProgress.Presets.shades_classic
+  );
+
   const conn = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
   const response = await conn.getProgramAccounts(METADATA_PROGRAM_PK, {
     filters: [
@@ -28,7 +34,15 @@ interface MintData {
     ],
   });
 
-  console.log('Found: ', response.length);
+  const totalSupply = response.length;
+  console.log('Found: ', totalSupply);
+
+  progressBar.start(totalSupply, 0);
+
+  if (!totalSupply) {
+    progressBar.stop();
+    return;
+  }
 
   const mintTokenIds = [];
   const mints: MintData[] = [];
@@ -46,7 +60,11 @@ interface MintData {
 
     mintTokenIds.push(solMetadata.mint);
     mints.push(mintData);
+
+    progressBar.increment();
   }
+
+  progressBar.stop();
 
   console.log(mintTokenIds);
 })();
