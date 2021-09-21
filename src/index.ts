@@ -1,1 +1,1 @@
-console.log("mint list");
+console.log('mint list');
