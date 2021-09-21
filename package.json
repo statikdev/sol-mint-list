@@ -5,6 +5,7 @@
   "repository": "https://github.com/statikdev/sol-mint-list.git",
   "author": "rob shaw <rob@statik.dev>",
   "private": false,
+  "license": "MIT",
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "lint": "prettier --config ./prettier.config.js --check \"src/**/*.{js,jsx,ts,tsx}\"",
