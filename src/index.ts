@@ -40,7 +40,12 @@ async function tryToShowOverallMetadataInfo(accountData) {
 }
 
 (async function () {
-  const mintWalletAddress = 'AuTF3kgAyBzsfjGcNABTSzzXK4bVcZcyZJtpCrayxoVp'; // snek wallet mint
+  if (process.argv.length < 3) {
+    console.error('please provide a wallet address as an argument');
+    return;
+  }
+
+  const mintWalletAddress = process.argv.slice(2).shift();
 
   const conn = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
   const response = await conn.getProgramAccounts(METADATA_PROGRAM_PK, {
