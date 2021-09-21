@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 import cliProgress from 'cli-progress';
 import got from 'got';
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
@@ -7,6 +10,7 @@ import { METADATA_PROGRAM_ID } from './metaplex/constants';
 import { decodeMetadata } from './metaplex/metadata';
 
 const METADATA_PROGRAM_PK = new PublicKey(METADATA_PROGRAM_ID);
+const OUTPUT_DIR = './results';
 
 interface MintData {
   mintWalletAddress: string;
@@ -37,6 +41,7 @@ interface MintData {
   });
 
   const totalSupply = response.length;
+  console.log('Mint Wallet Address: ', mintWalletAddress);
   console.log('Found: ', totalSupply);
 
   progressBar.start(totalSupply, 0);
@@ -70,5 +75,19 @@ interface MintData {
 
   progressBar.stop();
 
-  console.log(mintTokenIds);
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR);
+  }
+
+  fs.writeFileSync(
+    path.join(OUTPUT_DIR, `mint-token-ids:${mintWalletAddress}.json`),
+    JSON.stringify(mintTokenIds),
+    'utf-8'
+  );
+
+  fs.writeFileSync(
+    path.join(OUTPUT_DIR, `mint-data:${mintWalletAddress}.json`),
+    JSON.stringify(mints),
+    'utf-8'
+  );
 })();
