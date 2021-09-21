@@ -9,13 +9,15 @@ import { decodeMetadata } from './metaplex/metadata';
 const METADATA_PROGRAM_PK = new PublicKey(METADATA_PROGRAM_ID);
 
 interface MintData {
+  mintWalletAddress: string;
   metadata: Metadata;
   attributes: any;
   imageUri?: string;
+  totalSupply: number;
 }
 
 (async function () {
-  const mintWallet = 'AuTF3kgAyBzsfjGcNABTSzzXK4bVcZcyZJtpCrayxoVp'; // snek wallet mint
+  const mintWalletAddress = 'AuTF3kgAyBzsfjGcNABTSzzXK4bVcZcyZJtpCrayxoVp'; // snek wallet mint
 
   const progressBar = new cliProgress.SingleBar(
     {},
@@ -28,7 +30,7 @@ interface MintData {
       {
         memcmp: {
           offset: 326,
-          bytes: mintWallet,
+          bytes: mintWalletAddress,
         },
       },
     ],
@@ -53,9 +55,11 @@ interface MintData {
     const attrs = JSON.parse(nftInfoResponse.body);
 
     const mintData = {
-      metadata: solMetadata,
       attributes: attrs,
       imageUri: attrs?.image,
+      metadata: solMetadata,
+      mintWalletAddress,
+      totalSupply,
     };
 
     mintTokenIds.push(solMetadata.mint);
