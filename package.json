@@ -9,6 +9,12 @@
     "build": "tsc -p ./tsconfig.json",
     "lint": "prettier --config ./prettier.config.js --check \"src/**/*.{js,jsx,ts,tsx}\""
   },
+  "dependencies": {
+    "@solana/web3.js": "^1.28.0",
+    "bn.js": "^5.2.0",
+    "borsh": "^0.6.0",
+    "bs58": "^4.0.1"
+  },
   "devDependencies": {
     "prettier": "^2.4.1",
     "ts-node": "^10.2.1",
