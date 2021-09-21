@@ -7,7 +7,8 @@
   "private": false,
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "lint": "prettier --config ./prettier.config.js --check \"src/**/*.{js,jsx,ts,tsx}\""
+    "lint": "prettier --config ./prettier.config.js --check \"src/**/*.{js,jsx,ts,tsx}\"",
+    "retrieve": "ts-node src/index.ts"
   },
   "dependencies": {
     "@solana/web3.js": "^1.28.0",
