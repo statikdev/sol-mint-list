@@ -30,6 +30,15 @@ async function retrieveMetadata(accountData) {
   };
 }
 
+async function tryToShowOverallMetadataInfo(accountData) {
+  const { nftData } = await retrieveMetadata(accountData);
+
+  console.log(`Name: ${nftData.name || ''}`);
+  console.log(`Symbol: ${nftData.symbol || ''}`);
+  console.log(`Collection.Name: ${nftData.collection?.name || ''}`);
+  console.log(`Collection.Family: ${nftData.collection?.family || ''}`);
+}
+
 (async function () {
   const mintWalletAddress = 'AuTF3kgAyBzsfjGcNABTSzzXK4bVcZcyZJtpCrayxoVp'; // snek wallet mint
 
@@ -48,6 +57,10 @@ async function retrieveMetadata(accountData) {
   const totalSupply = response.length;
   console.log('Mint Wallet Address: ', mintWalletAddress);
   console.log('Total Supply: ', totalSupply);
+
+  // quickly show metadata from first record
+  const firstRecord = response[0];
+  await tryToShowOverallMetadataInfo(firstRecord.account.data);
 
   const progressBar = new cliProgress.SingleBar(
     {},
