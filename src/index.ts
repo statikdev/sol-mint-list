@@ -5,7 +5,7 @@ import cliProgress from 'cli-progress';
 import got from 'got';
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 
-import { Metadata } from './metaplex/classes';
+import { Data, Metadata } from './metaplex/classes';
 import { METADATA_PROGRAM_ID } from './metaplex/constants';
 import { decodeMetadata } from './metaplex/metadata';
 
@@ -13,20 +13,25 @@ const METADATA_PROGRAM_PK = new PublicKey(METADATA_PROGRAM_ID);
 const OUTPUT_DIR = './results';
 
 interface MintData {
-  mintWalletAddress: string;
-  metadata: Metadata;
-  attributes: any;
   imageUri?: string;
+  mintWalletAddress: string;
+  nftData: Data;
+  tokenMetadata: Metadata;
   totalSupply: number;
+}
+
+async function retrieveMetadata(accountData) {
+  const tokenMetadata = decodeMetadata(accountData);
+  const nftInfoResponse = await got(tokenMetadata.data.uri);
+
+  return {
+    nftData: JSON.parse(nftInfoResponse.body),
+    tokenMetadata,
+  };
 }
 
 (async function () {
   const mintWalletAddress = 'AuTF3kgAyBzsfjGcNABTSzzXK4bVcZcyZJtpCrayxoVp'; // snek wallet mint
-
-  const progressBar = new cliProgress.SingleBar(
-    {},
-    cliProgress.Presets.shades_classic
-  );
 
   const conn = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
   const response = await conn.getProgramAccounts(METADATA_PROGRAM_PK, {
@@ -42,7 +47,12 @@ interface MintData {
 
   const totalSupply = response.length;
   console.log('Mint Wallet Address: ', mintWalletAddress);
-  console.log('Found: ', totalSupply);
+  console.log('Total Supply: ', totalSupply);
+
+  const progressBar = new cliProgress.SingleBar(
+    {},
+    cliProgress.Presets.shades_classic
+  );
 
   progressBar.start(totalSupply, 0);
 
@@ -55,19 +65,19 @@ interface MintData {
   const mints: MintData[] = [];
 
   for (const record of response) {
-    const solMetadata = decodeMetadata(record.account.data);
-    const nftInfoResponse = await got(solMetadata.data.uri);
-    const attrs = JSON.parse(nftInfoResponse.body);
+    const { nftData, tokenMetadata } = await retrieveMetadata(
+      record.account.data
+    );
 
     const mintData = {
-      attributes: attrs,
-      imageUri: attrs?.image,
-      metadata: solMetadata,
+      imageUri: nftData?.image,
       mintWalletAddress,
+      nftData,
+      tokenMetadata,
       totalSupply,
     };
 
-    mintTokenIds.push(solMetadata.mint);
+    mintTokenIds.push(tokenMetadata.mint);
     mints.push(mintData);
 
     progressBar.increment();
