@@ -1,3 +1,15 @@
+# ‼️ DO NOT USE (TEMPORARILY)
+
+⚠️ WARNING
+
+The current version of retrieving the mint list for a Candy Machine has an issue that will leads to returning fake token ids that are being returned by the `getProgramAccounts` call. Please refrain from using this until it has been resolved.
+
+see issue → https://github.com/statikdev/sol-mint-list/issues/7
+
+⚠️ WARNING
+
+---
+
 # Solana Mint Lint
 
 Command line tool written in Typescript to retrieve mint tokens with metadata from the Solana blockchain.
@@ -30,6 +42,7 @@ This list will be updated as more are tested.
 - [solanauts](https://solanauts.io) → BDYYJ1VzPDXwJoARMZNnN4MX4cZNjVvc5DfFaKzgrruz
 
 **_DISCLAIMER_**: This has **only** been tested against a few collections. It is not guaranteed to work for all.
+
 ## License
 
 Licensed under MIT — see [LICENSE](https://github.com/statikdev/sol-mint-list/blob/main/LICENSE).
